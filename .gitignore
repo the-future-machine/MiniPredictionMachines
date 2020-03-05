@@ -10,3 +10,6 @@ log/
 **/__pycache__
 api_keys.txt
 Makefile.apikeys
+**/build
+**/.vscode
+**/.history

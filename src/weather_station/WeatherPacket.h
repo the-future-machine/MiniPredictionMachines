@@ -11,6 +11,7 @@ typedef struct {
     float rainFallMmMinute;
     float rainFallMmHour;
     float rainFallMmDay;
+    float co2Ppm;
     float batteryVoltage;
     float dutyCycle;
     uint16_t checksum;

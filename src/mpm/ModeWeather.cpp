@@ -84,10 +84,10 @@ void ModeWeather_::modeUpdate()
         if (!inPacket) {
             // do the magic...
             magicBuf[magicPtr++] = (uint8_t)c;
-            if (!checkMagic()) { 
+            if (!checkMagic()) {
                 DBLN(F("bad magic"));
-                resetData(); 
-                break; 
+                resetData();
+                break;
             }
             if (magicPtr == 2) {
                 inPacket = true;
@@ -125,7 +125,7 @@ void ModeWeather_::updateMessage()
 
     // This might take a little while, so give the ESP a chance to do it's stuff
     yield();
-    
+
     // example URL: /current_message?now=123456789&pubkey=XXXXX&did=0EA4F2&hmac=a65238b87fed...
     String url = API_BASE_URL;
     url += F("/current_message");
@@ -141,7 +141,7 @@ void ModeWeather_::updateMessage()
     http.begin(url.c_str());
     int httpCode = http.GET();
     if (httpCode == 200) {
-        // We expect e|message, where e is expiry time in unix seconds, and message is 
+        // We expect e|message, where e is expiry time in unix seconds, and message is
         // the text we want to display.  Note: message may contain embedded | characters
         String body = http.getString();
         DB(F("http OK, body: "));
@@ -196,8 +196,8 @@ void ModeWeather_::displayLastData()
     // 1. never been retrieved
     // 2. expired
     if (messageTimeout == 0 || messageTimeout < ModeRealTime.unixTime() || forceDataView) {
-        OLED.clearBuffer();               
-        OLED.setFont(OLED_MESSAGE_FONT);  
+        OLED.clearBuffer();
+        OLED.setFont(OLED_MESSAGE_FONT);
         uint8_t ypos = OLED_MESSAGE_FONT_HEIGHT;
 #if DISPLAY_BATTERY_VOLTAGE==1
         ypos += OLED_MESSAGE_FONT_HEIGHT;
@@ -219,6 +219,10 @@ void ModeWeather_::displayLastData()
         OLED.drawStr (0,   ypos, "Rain (1 hr):");
         OLED.drawStr (70,  ypos, packet.data.moisture ? "Wet" : "Dry" );
         OLED.drawStrR(127, ypos, String(packet.data.rainFallMmHour, 2).c_str());
+
+        ypos += (OLED_MESSAGE_FONT_HEIGHT + OLED_MESSAGE_FONT_VSEP);
+        OLED.drawStr (0,   ypos, "CO2 (ppm):");
+        OLED.drawStrR(127, ypos, String(packet.data.co2Ppm, 2).c_str());
 
 #if DISPLAY_BATTERY_VOLTAGE==1
         ypos += (OLED_MESSAGE_FONT_HEIGHT + OLED_MESSAGE_FONT_VSEP);
@@ -266,6 +270,8 @@ void ModeWeather_::checkWeatherPacket()
         DB(packet.data.rainFallMmHour);
         DB(F(" RD="));
         DB(packet.data.rainFallMmDay);
+        DB(F(" C2="));
+        DB(packet.data.co2Ppm);
         DB(F(" BV="));
         DB(packet.data.batteryVoltage);
         DB(F(" DC="));
@@ -310,7 +316,7 @@ bool ModeWeather_::checkMagic()
 void ModeWeather_::uploadThingspeak()
 {
     HTTPClient http;
-    
+
     String url = THINGSPEAK_URL_TEMPLATE;
     url.replace("{k}", THINGSPEAK_API_KEY);
     url.replace("{1}", String(packet.data.temperatureC, 3));

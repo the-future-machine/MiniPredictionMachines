@@ -22,6 +22,7 @@
 #include "WindspeedSensor.h"
 #include "RainfallSensor.h"
 #include "BatteryVoltage.h"
+#include "Co2Sensor.h"
 
 // And general configuration like pins
 #include "WeatherPacket.h"
@@ -70,6 +71,7 @@ void sendData(uint32_t realMillis)
     data.rainFallMmHour = RainfallSensor.rainfallMinutes(60);
     data.rainFallMmDay = RainfallSensor.rainfallMinutes(60*24);
     data.batteryVoltage = BatteryVoltage.volts();
+    data.co2Ppm = CO2Sensor.getCo2Ppm();
     data.dutyCycle = (float)millis()/realMillis;
     weatherPacketCsUpdate(&data);
 
@@ -92,6 +94,8 @@ void sendData(uint32_t realMillis)
     DB(data.rainFallMmHour);
     DB(F(" RD="));
     DB(data.rainFallMmDay);
+    DB(F(" C2="));
+    DB(data.co2Ppm);
     DB(F(" BV="));
     DB(data.batteryVoltage);
     DB(F(" DC="));
@@ -116,7 +120,7 @@ void goSleep()
 {
 #ifdef DEBUG
     // this to allow clean serial messages
-    delay(10); 
+    delay(10);
 #endif
 
     // Select sleep mode.  Here using most power-saving mode
@@ -125,7 +129,7 @@ void goSleep()
     sleep_mode();       // sleep
 
     // Wake up here. What day it is?
-    sleep_disable(); 
+    sleep_disable();
 
 #ifdef DEBUG
     // this to allow clean serial messages
@@ -161,14 +165,14 @@ void setup()
 
     // Watchdog timer setup
     MCUSR &= ~(1<<WDRF); // Clear the reset flag
-  
+
     /* In order to change WDE or the prescaler, we need to
      * set WDCE (This will allow updates for 4 clock cycles).
      */
     WDTCSR |= (1<<WDCE) | (1<<WDE);
 
     // set prescaler (0.5 second)
-    WDTCSR = (0<<WDP3) | (1<<WDP2) | (0<<WDP1) | (1<<WDP0); 
+    WDTCSR = (0<<WDP3) | (1<<WDP2) | (0<<WDP1) | (1<<WDP0);
 
     // Enable the WD interrupt (no reset)
     WDTCSR |= _BV(WDIE);
@@ -240,4 +244,3 @@ void loop()
 
     goSleep();
 }
-

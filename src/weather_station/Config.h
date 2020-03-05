@@ -31,11 +31,12 @@ const uint8_t TX_SOFT2_PIN              = A2;
 const uint8_t RX_SOFT2_PIN              = A3;
 const uint8_t SDA_PIN                   = A4;
 const uint8_t SCLK_PIN                  = A5;
+const uint8_t CO2_PIN                   = A6;
 
 // Comms speed for HC12 device
 const uint32_t HC12_BAUD                = 4800;
 
-// Tune this based on measuements from an external device with an 
+// Tune this based on measuements from an external device with an
 // accurate clock. It's not going to be perfect because the clock
 // in the nano is not temperature stabalized - we will just do our
 // best to have a fairly sane timekeeper
@@ -65,7 +66,7 @@ const float RAINFALL_MM_PER_PULSE       = 0.319951;
 // that follows is a weather packet
 const uint8_t WEATHER_PACKET_MAGIC[]    = {0x12, 0x13};
 
-// How many samples to take when measuring voltage of battery, 
+// How many samples to take when measuring voltage of battery,
 // resistance of voltage divider in K-Ohms, and reference voltage
 const uint8_t VBATT_SAMPLES             = 8;
 const uint8_t VBATT_R1                  = 100;
