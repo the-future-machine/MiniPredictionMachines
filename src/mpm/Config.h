@@ -59,7 +59,7 @@ const uint8_t OLED_MESSAGE_FONT_VSEP    = 3;
 #define THINGSPEAK_UPLOAD 0
 #endif
 
-#ifdef THINGSPEAK_API_KEY
+#ifndef THINGSPEAK_API_KEY
 // Define your THINGSPEAK write API key here.  Remember, don't commit
 // API keys to git, or publish them some other way.
 #define THINGSPEAK_API_KEY          F("0000000001111111")
@@ -72,12 +72,15 @@ const uint8_t OLED_MESSAGE_FONT_VSEP    = 3;
 // Some of these are wrapped in #ifdefs so they can be over-ridden from the Makefile using a command line -D option
 #ifndef TIMESTREAMS_UPLOAD
 // Set to 1 to enable timestreams functionality, 0 to disable
-#define TIMESTREAMS_UPLOAD 1
+#define TIMESTREAMS_UPLOAD 0
 #endif
 
 // You can define API key details here, but remember, live API keys should
 // not be commited to the git repo!  We wrap in an #ifdef in case we're
 // building with the Makefile and have used a command-line #define
+#ifndef TIMESTREAMS_API_PUBKEY
+#define TIMESTREAMS_API_PUBKEY "xxxxxxxxxx"
+#endif
 #ifndef TIMESTREAMS_API_PRIKEY
 #define TIMESTREAMS_API_PRIKEY "00000000001111111111222222222233"
 #endif
